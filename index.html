@@ -1,79 +1,678 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#1f3a34">
-  <title>Card</title>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <style>
-    * { box-sizing: border-box; }
-    body { margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 1rem; background: #1f3a34; font-family: system-ui, sans-serif; }
-    .scene { width: min(100%, 26rem); aspect-ratio: 4 / 5; perspective: 75rem; }
-    #card { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform .7s cubic-bezier(.4,.2,.2,1); cursor: pointer; }
-    #card.flipped { transform: rotateY(180deg); }
-    .face { position: absolute; inset: 0; display: grid; place-items: center; padding: 2rem; border-radius: 1.5rem; backface-visibility: hidden; text-align: center; overflow: auto; }
-    .front { color: #1f3a34; background: linear-gradient(135deg,#fbf7f1,#efe4d4); }
-    .back { color: #fbf7f1; background: #1f3a34; border: 2px solid #e3c58e; transform: rotateY(180deg); }
-    .content { width: 100%; display: grid; gap: 1.25rem; }
-    [data-field] { overflow-wrap: anywhere; }
-    .hint { font-size: .85rem; opacity: .75; }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f5e4e0">
+
+<title>Birthday Surprise ♡</title>
+
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+<style>
+:root {
+    --cream: #fffaf2;
+    --pink: #f6d8d8;
+    --rose: #b85f70;
+    --ink: #49363a;
+    --gold: #c99c56;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: grid;
+    place-items: center;
+    padding: max(16px, env(safe-area-inset-top)) 16px
+             max(16px, env(safe-area-inset-bottom));
+    background:
+        radial-gradient(ellipse at 10% 12%, #fff 0%, transparent 35%),
+        radial-gradient(ellipse at 90% 85%, #ffdade 0%, transparent 34%),
+        #f5e4e0;
+    color: var(--ink);
+    font-family: "Trebuchet MS", system-ui, sans-serif;
+}
+
+.wrap {
+    width: min(100%, 390px);
+}
+
+.top-note {
+    text-align: center;
+    margin: 0 0 12px;
+    color: #8c6269;
+    font-size: 11px;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+}
+
+.scene {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    perspective: 1200px;
+}
+
+#card {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transition: transform .8s cubic-bezier(.2,.7,.15,1);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+#card.flipped {
+    transform: rotateY(180deg);
+}
+
+.face {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    border-radius: 25px;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    box-shadow: 0 18px 48px rgba(112,70,75,.2);
+}
+
+/* =========================
+   FRONT SIDE
+========================= */
+
+.front {
+    background:
+        #fffaf2 url("./cats-flowers.png")
+        center center / cover no-repeat;
+    border: 1px solid white;
+}
+
+.front::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        180deg,
+        rgba(255,250,242,.97) 0%,
+        rgba(255,250,242,.85) 25%,
+        rgba(255,250,242,.25) 48%,
+        transparent 70%
+    );
+}
+
+.front-inner {
+    position: relative;
+    z-index: 1;
+    height: 100%;
+    padding: 24px 20px 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.sticker {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border-radius: 30px;
+    background: rgba(255,255,255,.9);
+    border: 1px solid #f0d8d7;
+    color: var(--rose);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .13em;
+    box-shadow: 0 3px 12px rgba(143,84,92,.08);
+}
+
+.hearts {
+    margin-top: 12px;
+    color: #ce7d8a;
+    font-size: 15px;
+    letter-spacing: .35em;
+}
+
+h1 {
+    font-family: Georgia, "Times New Roman", serif;
+    font-weight: 600;
+    font-size: clamp(27px, 7vw, 35px);
+    line-height: 1.08;
+    margin: 9px 0 8px;
+    color: #70464d;
+    text-wrap: balance;
+}
+
+.subtitle {
+    max-width: 260px;
+    font-family: Georgia, serif;
+    font-style: italic;
+    font-size: 16px;
+    line-height: 1.35;
+    color: #855a60;
+}
+
+.brand {
+    margin-top: 12px;
+    font-size: 10px;
+    letter-spacing: .2em;
+    color: #8a7765;
+    font-weight: 800;
+}
+
+.meme {
+    position: absolute;
+    z-index: 2;
+    right: 12px;
+    bottom: 17px;
+    transform: rotate(7deg);
+    background: white;
+    border: 2px solid white;
+    border-radius: 13px;
+    padding: 7px 10px;
+    box-shadow: 0 5px 16px rgba(75,40,45,.22);
+    font-size: 11px;
+    font-weight: 900;
+    color: #5a4147;
+}
+
+.meme span {
+    display: block;
+    font-size: 25px;
+    line-height: 1.2;
+}
+
+.front-foot {
+    margin-top: auto;
+    font-size: 10px;
+    color: #805c61;
+    background: rgba(255,250,242,.88);
+    padding: 7px 12px;
+    border-radius: 20px;
+}
+
+/* =========================
+   BACK SIDE
+========================= */
+
+.back {
+    transform: rotateY(180deg);
+    background: var(--cream);
+    border: 1px solid white;
+    padding: 14px;
+}
+
+.back-frame {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border: 1px solid #dcbf9b;
+    border-radius: 17px;
+    padding: 15px 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+
+    background:
+        radial-gradient(
+            circle at 0 0,
+            rgba(244,210,210,.5),
+            transparent 29%
+        ),
+        radial-gradient(
+            circle at 100% 100%,
+            rgba(218,227,205,.6),
+            transparent 27%
+        ),
+        var(--cream);
+}
+
+.back-flower {
+    color: #a87970;
+    font-size: 17px;
+    letter-spacing: .4em;
+}
+
+.back-brand {
+    margin: 5px 0;
+    font-size: 10px;
+    letter-spacing: .22em;
+    color: #8b6a58;
+    font-weight: 800;
+}
+
+.back h2 {
+    margin: 4px 0;
+    font: 600 18px Georgia, serif;
+    color: #68484d;
+}
+
+.amount {
+    font: 700 clamp(40px, 10vw, 52px)/1 Georgia, serif;
+    color: #ad596b;
+    margin: 7px 0;
+}
+
+.code-label {
+    font-size: 10px;
+    letter-spacing: .13em;
+    text-transform: uppercase;
+    color: #8b6a58;
+}
+
+.code {
+    margin: 5px 0;
+    padding: 7px 12px;
+    border: 1px dashed #d4a4a5;
+    background: #fff7f3;
+    border-radius: 8px;
+    font-size: 17px;
+    letter-spacing: .12em;
+    color: #71464d;
+    overflow-wrap: anywhere;
+    max-width: 100%;
+}
+
+.instructions {
+    font-size: 11px;
+    line-height: 1.3;
+    color: #7a5b5e;
+}
+
+.valid {
+    margin-top: 7px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #77575b;
+}
+
+.divider {
+    width: 75%;
+    border: 0;
+    border-top: 1px solid #e7d3c1;
+    margin: 9px 0;
+}
+
+.terms {
+    white-space: pre-line;
+    font-size: 10px;
+    line-height: 1.4;
+    color: #655154;
+    overflow-wrap: anywhere;
+}
+
+.contact {
+    margin-top: 8px;
+    font-size: 10px;
+    font-weight: 700;
+    color: #8c5962;
+    overflow-wrap: anywhere;
+}
+
+.back-cat {
+    position: absolute;
+    right: 9px;
+    bottom: 5px;
+    font-size: 22px;
+    transform: rotate(-12deg);
+}
+
+.hint {
+    text-align: center;
+    margin: 13px 0 0;
+    color: #8c6269;
+    font-size: 12px;
+}
+
+.hint strong {
+    color: #a85d6c;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-height: 690px) {
+    .wrap {
+        width: min(100%, 340px);
+    }
+
+    .back-frame {
+        padding: 10px;
+    }
+
+    .terms {
+        font-size: 9px;
+        line-height: 1.3;
+    }
+
+    .divider {
+        margin: 6px 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #card {
+        transition: none;
+    }
+}
+</style>
 </head>
+
 <body>
-  <main class="scene" aria-label="Card">
-    <section id="card" role="button" tabindex="0" aria-label="Flip card">
-      <div class="face front"><div class="content">
-        <div data-field="brand"></div><h1 data-field="title"></h1><strong data-field="amount"></strong>
-        <div data-field="subtitle"></div><div data-field="recipient"></div><div data-field="contact"></div>
-        <div class="hint">Tap to flip</div>
-      </div></div>
-      <div class="face back"><div class="content">
-        <h2 data-field="codeTitle"></h2><strong data-field="code"></strong><div data-field="instructions"></div>
-        <div data-field="validUntil"></div><div data-field="terms"></div><div data-field="contact"></div>
-      </div></div>
-    </section>
-  </main>
-  <script>
-    const WORKER_URL = 'https://certificate-worker.00-recall-coevals.workers.dev';
+
+<main class="wrap">
+
+    <p class="top-note">
+        a little birthday surprise ♡
+    </p>
+
+    <div class="scene" aria-label="Birthday card">
+
+        <section
+            id="card"
+            role="button"
+            tabindex="0"
+            aria-label="Flip card"
+            aria-pressed="false"
+        >
+
+            <!-- FRONT -->
+
+            <div class="face front">
+
+                <div class="front-inner">
+
+                    <div class="sticker">
+                        ✿ SPECIAL DELIVERY ✿
+                    </div>
+
+                    <div class="hearts">
+                        ♡ ✧ ♡
+                    </div>
+
+                    <h1 data-field="title">
+                        Арюна, с Днём Рождения!
+                    </h1>
+
+                    <div
+                        class="subtitle"
+                        data-field="subtitle"
+                    >
+                        Дарю тебе сертификат в SPA ♡
+                    </div>
+
+                    <div
+                        class="brand"
+                        data-field="brand"
+                    >
+                        HEADSPA RU
+                    </div>
+
+                    <div class="front-foot">
+                        для самой прекрасной именинницы
+                    </div>
+
+                </div>
+
+                <div class="meme">
+                    <span>🐱🎂</span>
+                    birthday cat says hi
+                </div>
+
+            </div>
+
+
+            <!-- BACK -->
+
+            <div class="face back">
+
+                <div class="back-frame">
+
+                    <div class="back-flower">
+                        ✿ ❀ ✿
+                    </div>
+
+                    <div
+                        class="back-brand"
+                        data-field="brand"
+                    >
+                        HEADSPA RU
+                    </div>
+
+                    <h2>
+                        Подарочный сертификат
+                    </h2>
+
+                    <div
+                        class="amount"
+                        data-field="amount"
+                    >
+                        5000 ₽
+                    </div>
+
+                    <div
+                        class="code-label"
+                        data-field="codeTitle"
+                    >
+                        Секретный код
+                    </div>
+
+                    <strong
+                        class="code"
+                        data-field="code"
+                    >
+                        ******
+                    </strong>
+
+                    <div
+                        class="instructions"
+                        data-field="instructions"
+                    >
+                        Назовите код на кассе
+                    </div>
+
+                    <div class="valid">
+                        Срок действия:
+                        <span data-field="validUntil">
+                            до 03.02.2027
+                        </span>
+                    </div>
+
+                    <hr class="divider">
+
+                    <div
+                        class="terms"
+                        data-field="terms"
+                    >Где действует:
+
+Стройковская улица, 12 к1,
+Москва, 109316
+
+Скатертный переулок, 15,
+Москва
+
+улица Пречистенка, 27,
+Москва, 119034</div>
+
+                    <div
+                        class="contact"
+                        data-field="contact"
+                    >
+                        +7 906 088-86-06
+                    </div>
+
+                    <div class="back-cat">
+                        🐈‍⬛🌷
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </div>
+
+    <p class="hint">
+        нажми на открытку, чтобы открыть подарок
+        <strong>↻</strong>
+    </p>
+
+</main>
+
+
+<script>
+
+    // ТВОЙ ОРИГИНАЛЬНЫЙ WORKER URL
+    const WORKER_URL =
+        'https://certificate-worker.00-recall-coevals.workers.dev';
+
     const card = document.getElementById('card');
+
     let loaded = false;
 
+
+    // Заполнение полей из Worker
+
     function setField(name, value) {
-      document.querySelectorAll(`[data-field="${name}"]`).forEach((el) => { el.textContent = value ?? ''; });
+
+        document
+            .querySelectorAll(`[data-field="${name}"]`)
+            .forEach((el) => {
+
+                el.textContent = value ?? '';
+
+            });
+
     }
+
+
+    // Загрузка сертификата
 
     async function loadCardData() {
-      if (loaded) return;
-      loaded = true;
-      const initData = window.Telegram?.WebApp?.initData;
-      if (!initData) {
-        setField('code', 'Open this card through Telegram');
-        return;
-      }
-      try {
-        const response = await fetch(WORKER_URL, { headers: { Authorization: `tma ${initData}` } });
-        if (!response.ok) throw new Error('Request failed');
-        const data = await response.json();
-        for (const [key, value] of Object.entries(data)) setField(key, value);
-      } catch {
-        setField('code', 'Unable to load card data');
-      }
+
+        if (loaded) return;
+
+        loaded = true;
+
+        const initData =
+            window.Telegram?.WebApp?.initData;
+
+        if (!initData) {
+
+            setField(
+                'code',
+                'Open this card through Telegram'
+            );
+
+            return;
+        }
+
+        try {
+
+            const response = await fetch(
+                WORKER_URL,
+                {
+                    headers: {
+                        Authorization: `tma ${initData}`
+                    }
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error('Request failed');
+            }
+
+            const data = await response.json();
+
+            // Автоматически заполняем все поля,
+            // которые возвращает Worker
+
+            for (const [key, value] of Object.entries(data)) {
+
+                setField(key, value);
+
+            }
+
+        } catch (error) {
+
+            console.error(
+                'Certificate loading error:',
+                error
+            );
+
+            setField(
+                'code',
+                'Unable to load card data'
+            );
+
+        }
+
     }
 
+
+    // Переворот карточки
+
     function flip() {
-      card.classList.toggle('flipped');
-      if (card.classList.contains('flipped')) {
-        window.Telegram?.WebApp?.HapticFeedback?.impactOccurred?.('light');
-        loadCardData();
-      }
+
+        card.classList.toggle('flipped');
+
+        card.setAttribute(
+            'aria-pressed',
+            String(card.classList.contains('flipped'))
+        );
+
+        if (card.classList.contains('flipped')) {
+
+            window.Telegram
+                ?.WebApp
+                ?.HapticFeedback
+                ?.impactOccurred?.('light');
+
+            loadCardData();
+
+        }
+
     }
+
+
+    // Mouse / touch
+
     card.addEventListener('click', flip);
+
+
+    // Keyboard
+
     card.addEventListener('keydown', (event) => {
-      if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); flip(); }
+
+        if (
+            event.key === 'Enter' ||
+            event.key === ' '
+        ) {
+
+            event.preventDefault();
+
+            flip();
+
+        }
+
     });
+
+
+    // Telegram initialization
+
     window.Telegram?.WebApp?.ready();
+
     window.Telegram?.WebApp?.expand();
-  </script>
+
+</script>
+
 </body>
 </html>
